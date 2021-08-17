@@ -7,7 +7,7 @@ import numpy as np
 object_encode = {'plant': 1, 'soil': 0}
 
 
-def convert(source_dir, dest_dir):
+def convert_supervisely_format(source_dir, dest_dir):
     """
     Converts supervisely annotations formats to .npy format
 
@@ -45,4 +45,4 @@ if __name__ == '__main__':
     parser.add_argument('--dest', type=str, required=True)
     args = parser.parse_args()
 
-    convert(args.source, args.dest)
+    convert_supervisely_format(args.source, args.dest)
