@@ -12,12 +12,42 @@
       integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We"
       crossorigin="anonymous"
     />
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
   </head>
 
   <style>
     #images-container .row .col-3 img {
       width: 90%;
     }
+
+    #images-container .row .col-3 .material-icons {
+      position: absolute;
+      top: 10%;
+      right: 10%;
+      background: #E0E0E0;
+      padding: 5px 7px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition-duration: 0.2s;
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    #images-container .row .col-3 .material-icons:hover {
+      background: #BDBDBD;
+    }
+
+    #images-container .row .col-3:hover .material-icons {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    #modal-img-container {
+      width: 100%;
+    }
+    
   </style>
 
   <body>
@@ -26,7 +56,8 @@
         {% for i in range(num_rows) %} 
           {% for j in range(4) %}
             {% if i*4 + j < images|length %}
-              <div class="col-3 text-center">
+              <div class="col-3 text-center position-relative">
+                <span class="material-icons preview-single-pcd">visibility</span>
                 <img src="{{ images[i*4 + j] }}" />
               </div>
             {% endif %}
@@ -34,5 +65,33 @@
         {% endfor %}
       </div>
     </div>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Point Cloud Preview</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <img src="" id="modal-img-container" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <script>
+      const modal = new bootstrap.Modal(document.getElementById('exampleModal'), {});
+      const modalImgContainer = document.getElementById('modal-img-container');
+      
+      document.querySelectorAll('.preview-single-pcd').forEach(item => {
+        item.addEventListener('click', event => {
+          modalImgContainer.src = event.target.nextElementSibling.src;
+          modal.show();
+        })
+      })
+    </script>
   </body>
 </html>
