@@ -36,7 +36,7 @@ def convert_supervisely_format(source_dir, dest_dir):
             classes[indices] = object_encode[objects[obj_id].lower()]
         
         with open(os.path.join(dest_dir, file_name.replace('.pcd.json', '.npy')), 'wb') as f:
-            np.save(f, np.array([1, 2]))
+            np.save(f, classes)
 
 
 if __name__ == '__main__':
