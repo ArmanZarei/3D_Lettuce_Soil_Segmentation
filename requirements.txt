@@ -1,3 +1,7 @@
 numpy
 open3d
 
+torchvision==0.10.0+cu102
+torchaudio===0.9.0
+--find-links https://download.pytorch.org/whl/torch_stable.html
+torch==1.9.0+cu102
