@@ -3,7 +3,7 @@ import numpy as np
 
 def random_point_sampler(points, labels, size=5000):
     """
-    Generate a HTML containing annotated gifs
+    Random Point Sampler
 
     Parameters:
         points (list): List of pointclouds
