@@ -1,6 +1,6 @@
-# PointNet Segmentation - PyTorch Implementation
+# 3D Lettuce Soil Segmentation 
 
-## Results
+## PointNet
 ### Examples from Test Set
 <table>
     <thead>
@@ -40,16 +40,8 @@
         </tr>
     </thead>
     <tr>
-        <td>91%</td>
-        <td>90%</td>
-        <td>90%</td>
+        <td>97.55%</td>
+        <td>95.63%</td>
+        <td>95.228%</td>
     </tr>
 </table>
-
-## Usage
-- Download the dataset: `make download`
-- Train + Test + Visualization: `make run`
-
-## Resources
-
-...
