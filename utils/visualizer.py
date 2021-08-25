@@ -44,3 +44,4 @@ class PointCloudVisualizer:
         
         ani = animation.ArtistAnimation(fig, ims, blit=True)
         ani.save(file_path, writer='pillow', fps=10)
+        plt.close(fig)
