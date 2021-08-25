@@ -27,7 +27,7 @@ class LettucePointCloudDataset(Dataset):
     def __getitem__(self, idx):
         pcd = o3d.io.read_point_cloud(self.files[idx]['pcd_path'])
         points = np.array(pcd.points)
-        labels = np.load(self.files[idx]['seg_path'])
+        labels = np.load(self.files[idx]['seg_path']).astype(np.long)
 
         points, labels = PointSampler(1500)((points, labels))
         if self.is_train:
