@@ -7,7 +7,7 @@
         <tr>
             <th style="text-align: center;">Ground Truth</th>
             <th style="text-align: center;">Predicted</th>
-            <th style="text-align: center;">Diff.</th>
+            <th style="text-align: center;">Diff. (Error)</th>
         </tr>
     </thead>
     <tr>
