@@ -17,7 +17,7 @@ class LettucePointCloudDataset(Dataset):
             seg_dir = f'{dataset_dir}{batch_dir_name}/{batch_dir_name}_norm_annot_seg/'
             for f in os.listdir(seg_dir):
                 self.files.append({
-                    'pcd_path': pcd_dir + f.replace('.npy', 'pcd'),
+                    'pcd_path': pcd_dir + f.replace('.npy', '.pcd'),
                     'seg_path': seg_dir + f, 
                 })
 
