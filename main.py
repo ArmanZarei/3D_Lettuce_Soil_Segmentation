@@ -6,7 +6,7 @@ from torch.utils.data.dataset import random_split
 import torch
 from models.pointnet import PointNet, pointnet_loss
 from utils.utils import training_process_plot_save, test_accuracy
-from utils.visualizer import PointCloudVisualizer
+from utils.visualizer import PointCloudVisualizer, labels_to_soil_and_lettuce_colors
 import numpy as np
 
 
@@ -28,6 +28,8 @@ test_dataloader = DataLoader(test_dataset, batch_size=16)
 
 
 # -------------------------------- Training -------------------------------- #
+num_epoches = 100
+
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(f'Device: {device}\n{"-"*30}')
 
@@ -38,7 +40,7 @@ optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 train_loss_arr, val_loss_arr = [], []
 train_accuracy_arr, val_accuracy_arr = [], []
 
-for epoch in range(15):
+for epoch in range(num_epoches):
     train_loss, val_loss = .0, .0
     train_acc, val_acc = .0, .0
   
@@ -71,7 +73,7 @@ for epoch in range(15):
     print(f'Epoch: {"{:2d}".format(epoch)} -> \t Train Loss: {"%.10f"%train_loss_arr[-1]} \t Validation Loss: {"%.10f"%val_loss_arr[-1]} | Train Accuracy: {"%.4f"%train_accuracy_arr[-1]} \t Validation Accuracy: {"%.4f"%val_accuracy_arr[-1]} \t ')
 
 
-torch.save(model.state_dict(), f'pointnet_epoch({15}).pth')
+torch.save(model.state_dict(), 'models_checkpoint/pointnet.pth')
 training_process_plot_save(train_loss_arr, val_loss_arr, train_accuracy_arr, val_accuracy_arr)
 
 
@@ -92,8 +94,8 @@ num_visualizations = 3
 for i in range(num_visualizations):
     print(f"Visualization {i+1}/{num_visualizations}")
     curr_input, curr_label, curr_output = input[i].cpu(), labels[i].cpu(), outputs[i].cpu()
-    visualizer.save_visualization(curr_input, curr_label, f'images/labeled_{i}.gif')
-    visualizer.save_visualization(curr_input, curr_output, f'images/predicted_{i}.gif')
-    colors = np.full(curr_label.shape, '#2ecc71', dtype=object)
-    colors[curr_output!=curr_label] = '#e74c3c'
+    visualizer.save_visualization(curr_input, labels_to_soil_and_lettuce_colors(curr_label), f'images/labeled_{i}.gif')
+    visualizer.save_visualization(curr_input, labels_to_soil_and_lettuce_colors(curr_output), f'images/predicted_{i}.gif')
+    colors = np.full(curr_label.shape[0], '#2ecc71', dtype=object)
+    colors[curr_output != curr_label] = '#e74c3c'
     visualizer.save_visualization(curr_input, colors, f'images/diff_{i}.gif')
