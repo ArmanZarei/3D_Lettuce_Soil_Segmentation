@@ -10,7 +10,7 @@ class LettucePointCloudDataset(Dataset):
         self.is_train = is_train
         self.transform = transform
         self.files = []
-        
+
         dataset_dir = root_dir + 'PhytoOracle_Dataset/'
         for batch_dir_name in os.listdir(dataset_dir):
             pcd_dir = f'{dataset_dir}{batch_dir_name}/{batch_dir_name}_norm/'
@@ -18,7 +18,7 @@ class LettucePointCloudDataset(Dataset):
             for f in os.listdir(seg_dir):
                 self.files.append({
                     'pcd_path': pcd_dir + f.replace('.npy', 'pcd'),
-                    'seg_path': seg_dir + seg_dir + f, 
+                    'seg_path': seg_dir + f, 
                 })
 
     def __len__(self):
@@ -32,5 +32,5 @@ class LettucePointCloudDataset(Dataset):
         points, labels = PointSampler(1500)((points, labels))
         if self.is_train:
             points, labels = self.transform((points, labels))
-        
+
         return points, labels
