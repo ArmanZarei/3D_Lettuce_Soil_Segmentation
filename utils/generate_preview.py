@@ -3,7 +3,7 @@ import os
 import numpy as np
 import argparse
 from jinja2 import Template
-from visualizer import PointCloudVisualizer
+from visualizer import PointCloudVisualizer, labels_to_soil_and_lettuce_colors
 from utils import random_point_sampler
 
 
@@ -38,7 +38,7 @@ def generate_preview(pcd_dir, annot_dir, dest_dir):
 
         points, labels = random_point_sampler(points, labels)
 
-        visualizer.save_visualization(points, labels, os.path.join(dest_dir, file_name.replace('.npy', '.gif')))
+        visualizer.save_visualization(points, labels_to_soil_and_lettuce_colors(labels), os.path.join(dest_dir, file_name.replace('.npy', '.gif')))
         images.append(file_name.replace('.npy', '.gif'))
 
     generate_html(images, dest_dir)

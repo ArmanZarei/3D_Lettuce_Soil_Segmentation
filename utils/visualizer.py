@@ -26,9 +26,6 @@ class PointCloudVisualizer:
         ])
     
     def save_visualization(self, points, labels, file_path):
-        colors = np.array(['#4E342E' for i in range(labels.size)])
-        colors[labels == 1] = '#2E7D32'
-        
         fig = plt.figure()
         ax = fig.add_subplot(projection='3d')
         ax.set_xticklabels([])
@@ -40,8 +37,15 @@ class PointCloudVisualizer:
         for rot in [self.__R_z]:
             for theta in np.linspace(0, 2*np.pi, 40):
                 rp = rot(theta).dot(points.T).T
-                ims.append([ax.scatter(rp[:, 0], rp[:, 1], rp[:, 2], c=colors, s=2)])
+                ims.append([ax.scatter(rp[:, 0], rp[:, 1], rp[:, 2], c=labels, s=2)])
         
         ani = animation.ArtistAnimation(fig, ims, blit=True)
         ani.save(file_path, writer='pillow', fps=10)
         plt.close(fig)
+
+
+def labels_to_soil_and_lettuce_colors(labels):
+    colors = np.array(['#4E342E' for i in range(labels.shape[0])])
+    colors[labels == 1] = '#2E7D32'
+
+    return colors
