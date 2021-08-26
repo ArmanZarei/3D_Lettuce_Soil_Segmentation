@@ -4,8 +4,10 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 from torch.utils.data.dataset import random_split
 import torch
-from models.pointnet import PointNet, pointnet_loss
-from utils.utils import training_process_plot_save, test_accuracy
+import torch.nn as nn
+from models.pointnet import PointNet
+from models.randlanet import RandLANet
+from utils.utils import training_process_plot_save, test_accuracy, get_model_output_and_loss
 from utils.visualizer import PointCloudVisualizer, labels_to_soil_and_lettuce_colors
 import numpy as np
 
@@ -33,7 +35,14 @@ num_epoches = 100
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(f'Device: {device}\n{"-"*30}')
 
-model = PointNet().to(device)
+# 
+# model = PointNet().to(device)
+model = RandLANet(d_in=3, num_classes=2, num_neighbors=16, decimation=4, device=device).to(device)
+# --------------
+
+model_name = type(model).__name__
+
+
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
 
@@ -49,8 +58,7 @@ for epoch in range(num_epoches):
         input, labels = input.to(device).squeeze().float(), labels.to(device)
     
         optimizer.zero_grad()
-        outputs, mat_3x3, mat_64x64 = model(input)
-        loss = pointnet_loss(outputs, labels, mat_3x3, mat_64x64)
+        outputs, loss = get_model_output_and_loss(model, input, labels)
         loss.backward()
         optimizer.step()
 
@@ -61,8 +69,8 @@ for epoch in range(num_epoches):
     with torch.no_grad():
         for input, labels in val_dataloader:
             input, labels = input.to(device).squeeze().float(), labels.to(device)
-            outputs, mat_3x3, mat_64x64 = model(input)
-            val_loss += pointnet_loss(outputs, labels, mat_3x3, mat_64x64).item()
+            outputs, loss = get_model_output_and_loss(model, input, labels)
+            val_loss += loss.item()
             val_acc += (labels == outputs.argmax(1)).sum().item() / np.prod(labels.shape)
 
     train_loss_arr.append(train_loss/len(train_dataloader))
@@ -73,8 +81,8 @@ for epoch in range(num_epoches):
     print(f'Epoch: {"{:2d}".format(epoch)} -> \t Train Loss: {"%.10f"%train_loss_arr[-1]} \t Validation Loss: {"%.10f"%val_loss_arr[-1]} | Train Accuracy: {"%.4f"%train_accuracy_arr[-1]} \t Validation Accuracy: {"%.4f"%val_accuracy_arr[-1]} \t ')
 
 
-torch.save(model.state_dict(), 'models_checkpoint/pointnet.pth')
-training_process_plot_save(train_loss_arr, val_loss_arr, train_accuracy_arr, val_accuracy_arr)
+torch.save(model.state_dict(), f'pretrained_models/{model_name}.pth')
+training_process_plot_save(train_loss_arr, val_loss_arr, train_accuracy_arr, val_accuracy_arr, save_dir=f'images/training_{model_name}.png')
 
 
 # # -------------------------------- Testing -------------------------------- #
@@ -86,7 +94,8 @@ print(f"Test Accuracy: {test_accuracy(model, test_dataloader, device)}")
 print("-"*30)
 input, labels = next(iter(test_dataloader))
 input, labels = input.squeeze().float().to(device), labels.to(device)
-outputs, _, _ = model(input)
+
+outputs, _ = get_model_output_and_loss(model, input, None, calculate_loss=False)
 outputs = outputs.argmax(1)
 
 visualizer = PointCloudVisualizer()
@@ -94,8 +103,8 @@ num_visualizations = 3
 for i in range(num_visualizations):
     print(f"Visualization {i+1}/{num_visualizations}")
     curr_input, curr_label, curr_output = input[i].cpu(), labels[i].cpu(), outputs[i].cpu()
-    visualizer.save_visualization(curr_input, labels_to_soil_and_lettuce_colors(curr_label), f'images/labeled_{i}.gif')
-    visualizer.save_visualization(curr_input, labels_to_soil_and_lettuce_colors(curr_output), f'images/predicted_{i}.gif')
+    visualizer.save_visualization(curr_input, labels_to_soil_and_lettuce_colors(curr_label), f'images/{model_name}_labeled_{i}.gif')
+    visualizer.save_visualization(curr_input, labels_to_soil_and_lettuce_colors(curr_output), f'images/{model_name}_predicted_{i}.gif')
     colors = np.full(curr_label.shape[0], '#2ecc71', dtype=object)
     colors[curr_output != curr_label] = '#e74c3c'
-    visualizer.save_visualization(curr_input, colors, f'images/diff_{i}.gif')
+    visualizer.save_visualization(curr_input, colors, f'images/{model_name}_diff_{i}.gif')

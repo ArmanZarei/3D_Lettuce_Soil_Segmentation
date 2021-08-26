@@ -1,7 +1,10 @@
+from models.pointnet import PointNet, pointnet_loss
+from models.randlanet import RandLANet
 import numpy as np
 import matplotlib.pyplot as plt
 import torch
 import matplotlib.animation as animation
+import torch.nn as nn
 
 
 def random_point_sampler(points, labels, size=5000):
@@ -58,8 +61,29 @@ def test_accuracy(model, test_dataloader, device):
     with torch.no_grad():
         for input, labels in test_dataloader:
             input, labels = input.to(device).squeeze().float(), labels.to(device)
-            outputs, _, _ = model(input)
+            outputs, _ = get_model_output_and_loss(model, input, labels, calculate_loss=False)
             test_acc += (labels == outputs.argmax(1)).sum().item() / np.prod(labels.shape)
         test_acc /= len(test_dataloader)
     
     return test_acc
+
+def get_model_output_and_loss(model, input, labels, calculate_loss=True):
+    """
+    Returns the output and loss of model according to model type
+
+    Parameters:
+        model (Type[nn.Module]): Model
+        input (Tensor): input
+    """
+    if isinstance(model, PointNet):
+        outputs, mat_3x3, mat_64x64 = model(input)
+        if not calculate_loss:
+            return outputs, None
+        return outputs, pointnet_loss(outputs, labels, mat_3x3, mat_64x64)
+    elif isinstance(model, RandLANet):
+        outputs = model(input)
+        if not calculate_loss:
+            return outputs, None
+        return outputs, nn.CrossEntropyLoss()(outputs, labels)
+    
+    raise Exception("Model should be of type PointNet or RandLANet")
