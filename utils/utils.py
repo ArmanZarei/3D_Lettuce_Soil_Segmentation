@@ -1,3 +1,4 @@
+from models.pointnet2 import PointNet2
 from models.pointnet import PointNet, pointnet_loss
 from models.randlanet import RandLANet
 import numpy as np
@@ -80,10 +81,10 @@ def get_model_output_and_loss(model, input, labels, calculate_loss=True):
         if not calculate_loss:
             return outputs, None
         return outputs, pointnet_loss(outputs, labels, mat_3x3, mat_64x64)
-    elif isinstance(model, RandLANet):
+    elif isinstance(model, (RandLANet, PointNet2)):
         outputs = model(input)
         if not calculate_loss:
             return outputs, None
         return outputs, nn.CrossEntropyLoss()(outputs, labels)
     
-    raise Exception("Model should be of type PointNet or RandLANet")
+    raise Exception("Model should be of type PointNet or RandLANet or PointNet++ (PointNet2)")

@@ -7,6 +7,7 @@ import torch
 import torch.nn as nn
 from models.pointnet import PointNet
 from models.randlanet import RandLANet
+from models.pointnet2 import PointNet2
 from utils.utils import training_process_plot_save, test_accuracy, get_model_output_and_loss
 from utils.visualizer import PointCloudVisualizer, labels_to_soil_and_lettuce_colors
 import numpy as np
@@ -35,10 +36,11 @@ num_epoches = 100
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(f'Device: {device}\n{"-"*30}')
 
-# 
+
 # model = PointNet().to(device)
-model = RandLANet(d_in=3, num_classes=2, num_neighbors=16, decimation=4, device=device).to(device)
-# --------------
+# model = RandLANet(d_in=3, num_classes=2, num_neighbors=16, decimation=4, device=device).to(device)
+model = PointNet2(2).to(device)
+
 
 model_name = type(model).__name__
 
