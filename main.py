@@ -22,7 +22,7 @@ dataset = LettucePointCloudDataset(
     ])
 )
 
-train_dataset, val_dataset, test_dataset = random_split(dataset, [40, 10, 7])
+train_dataset, val_dataset, test_dataset = random_split(dataset, [70, 13, 10])
 train_dataset.is_train = True
 
 train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True)
@@ -37,9 +37,9 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(f'Device: {device}\n{"-"*30}')
 
 
-# model = PointNet().to(device)
+model = PointNet().to(device)
 # model = RandLANet(d_in=3, num_classes=2, num_neighbors=16, decimation=4, device=device).to(device)
-model = PointNet2(2).to(device)
+# model = PointNet2(2).to(device)
 
 
 model_name = type(model).__name__

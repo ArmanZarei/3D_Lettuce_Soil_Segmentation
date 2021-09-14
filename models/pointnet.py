@@ -86,7 +86,7 @@ class Transform(nn.Module):
 
 
 class PointNet(nn.Module):
-    def __init__(self, num_classes=10):
+    def __init__(self, num_classes=2):
         super().__init__()
 
         self.transform = Transform()
