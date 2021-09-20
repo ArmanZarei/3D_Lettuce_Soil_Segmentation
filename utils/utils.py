@@ -1,6 +1,8 @@
+from models.dgcnn import DGCNN
 from models.pointnet2 import PointNet2
 from models.pointnet import PointNet, pointnet_loss
 from models.randlanet import RandLANet
+from models.dgcnn import DGCNN
 import numpy as np
 import matplotlib.pyplot as plt
 import torch
@@ -81,10 +83,10 @@ def get_model_output_and_loss(model, input, labels, calculate_loss=True):
         if not calculate_loss:
             return outputs, None
         return outputs, pointnet_loss(outputs, labels, mat_3x3, mat_64x64)
-    elif isinstance(model, (RandLANet, PointNet2)):
+    elif isinstance(model, (RandLANet, PointNet2, DGCNN)):
         outputs = model(input)
         if not calculate_loss:
             return outputs, None
         return outputs, nn.CrossEntropyLoss()(outputs, labels)
     
-    raise Exception("Model should be of type PointNet or RandLANet or PointNet++ (PointNet2)")
+    raise Exception("Model should be of type PointNet, RandLANet, PointNet++ (PointNet2) or DGCNN")
