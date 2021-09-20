@@ -171,7 +171,7 @@
 </table>
 
 ### Training Process
-![Training Process](images/training_PointNet2.png)
+![Training Process](images/training_DGCNN.png)
 
 ### Accuracy
 <table style="text-align: center;">
