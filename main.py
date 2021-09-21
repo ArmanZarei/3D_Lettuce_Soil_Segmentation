@@ -9,6 +9,7 @@ from models.pointnet import PointNet
 from models.randlanet import RandLANet
 from models.pointnet2 import PointNet2
 from models.dgcnn import DGCNN
+from models.simplified_dgcnn import SimplifiedDGCNN
 from utils.utils import training_process_plot_save, test_accuracy, get_model_output_and_loss
 from utils.visualizer import PointCloudVisualizer, labels_to_soil_and_lettuce_colors
 import numpy as np
@@ -41,13 +42,16 @@ print(f'Device: {device}\n{"-"*30}')
 # model = PointNet().to(device)
 # model = RandLANet(d_in=3, num_classes=2, num_neighbors=16, decimation=4, device=device).to(device)
 # model = PointNet2(2).to(device)
-model = DGCNN(num_classes=2).to(device)
+# model = DGCNN(num_classes=2).to(device)
+model = SimplifiedDGCNN(num_classes=2).to(device)
 
 
 model_name = type(model).__name__
 
 
-optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+# optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+optimizer = torch.optim.SGD(model.parameters(), lr=0.1, momentum=0.9, weight_decay=1e-4)
+scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, num_epoches, eta_min=1e-3)
 
 
 train_loss_arr, val_loss_arr = [], []
@@ -68,6 +72,7 @@ for epoch in range(num_epoches):
 
         train_loss += loss.item()
         train_acc += (labels == outputs.argmax(1)).sum().item() / np.prod(labels.shape)
+    scheduler.step()
     
     model.eval()
     with torch.no_grad():

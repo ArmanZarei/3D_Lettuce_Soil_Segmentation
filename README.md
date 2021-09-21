@@ -188,3 +188,50 @@
         <td>96.79%</td>
     </tr>
 </table>
+
+
+## Simplified DGCNN
+### Examples from Test Set
+<table>
+    <thead>
+        <tr>
+            <th style="text-align: center;">Ground Truth</th>
+            <th style="text-align: center;">Predicted</th>
+            <th style="text-align: center;">Diff. (Error)</th>
+        </tr>
+    </thead>
+    <tr>
+        <td><img src='images/SimplifiedDGCNN_labeled_0.gif'></td>
+        <td><img src='images/SimplifiedDGCNN_predicted_0.gif'></td>
+        <td><img src='images/SimplifiedDGCNN_diff_0.gif'></td>
+    </tr>
+    <tr>
+        <td><img src='images/SimplifiedDGCNN_labeled_1.gif'></td>
+        <td><img src='images/SimplifiedDGCNN_predicted_1.gif'></td>
+        <td><img src='images/SimplifiedDGCNN_diff_1.gif'></td>
+    </tr>
+    <tr>
+        <td><img src='images/SimplifiedDGCNN_labeled_2.gif'></td>
+        <td><img src='images/SimplifiedDGCNN_predicted_2.gif'></td>
+        <td><img src='images/SimplifiedDGCNN_diff_2.gif'></td>
+    </tr>
+</table>
+
+### Training Process
+![Training Process](images/training_SimplifiedDGCNN.png)
+
+### Accuracy
+<table style="text-align: center;">
+    <thead>
+        <tr>
+            <th>Train Set</th>
+            <th>Validation Set</th>
+            <th>Test Set</th>
+        </tr>
+    </thead>
+    <tr>
+        <td>98.36%</td>
+        <td>96.85%</td>
+        <td>97.41%</td>
+    </tr>
+</table>
