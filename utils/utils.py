@@ -104,7 +104,7 @@ def get_model_optimizer_and_scheduler(model, num_epochs):
         optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
         scheduler = None
     elif isinstance(model, (DGCNN, SimplifiedDGCNN)):
-        optimizer = torch.optim.SGD(model.parameters(), lr=0.005, momentum=0.9, weight_decay=1e-4)
+        optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9, weight_decay=1e-4)
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, num_epochs, eta_min=1e-3)
     else:
         raise Exception("Model should be of type PointNet, RandLANet, PointNet++ (PointNet2), DGCNN or SimplifiedDGCNN")
