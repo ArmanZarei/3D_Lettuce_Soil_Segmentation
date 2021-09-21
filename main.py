@@ -43,8 +43,8 @@ print(f'Device: {device}\n{"-"*30}')
 # model = PointNet().to(device)
 # model = RandLANet(d_in=3, num_classes=2, num_neighbors=16, decimation=4, device=device).to(device)
 # model = PointNet2(2).to(device)
-# model = DGCNN(num_classes=2).to(device)
-model = SimplifiedDGCNN(num_classes=2).to(device)
+model = DGCNN(num_classes=2).to(device)
+# model = SimplifiedDGCNN(num_classes=2).to(device)
 
 
 model_name = type(model).__name__
