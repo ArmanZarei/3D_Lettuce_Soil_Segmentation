@@ -91,3 +91,22 @@ def get_model_output_and_loss(model, input, labels, calculate_loss=True):
         return outputs, nn.CrossEntropyLoss()(outputs, labels)
     
     raise Exception("Model should be of type PointNet, RandLANet, PointNet++ (PointNet2), DGCNN or SimplifiedDGCNN")
+
+def get_model_optimizer_and_scheduler(model, num_epochs):
+    """
+    Returns optimizer and scheduler according to model's type
+
+    Parameters:
+        model (Type[nn.Module]): Model
+        num_epochs (Tensor): Number of epochs
+    """
+    if isinstance(model, (PointNet, RandLANet, PointNet2)):
+        optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+        scheduler = None
+    elif isinstance(model, (DGCNN, SimplifiedDGCNN)):
+        optimizer = torch.optim.SGD(model.parameters(), lr=0.1, momentum=0.9, weight_decay=1e-4)
+        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, num_epochs, eta_min=1e-3)
+    else:
+        raise Exception("Model should be of type PointNet, RandLANet, PointNet++ (PointNet2), DGCNN or SimplifiedDGCNN")
+    
+    return optimizer, scheduler
