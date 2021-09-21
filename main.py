@@ -24,7 +24,8 @@ dataset = LettucePointCloudDataset(
     ])
 )
 
-train_dataset, val_dataset, test_dataset = random_split(dataset, [70, 13, 10])
+SEED = 137512
+train_dataset, val_dataset, test_dataset = random_split(dataset, [70, 13, 10], generator=torch.Generator().manual_seed(SEED))
 train_dataset.is_train = True
 
 train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True)
@@ -42,8 +43,8 @@ print(f'Device: {device}\n{"-"*30}')
 # model = PointNet().to(device)
 # model = RandLANet(d_in=3, num_classes=2, num_neighbors=16, decimation=4, device=device).to(device)
 # model = PointNet2(2).to(device)
-model = DGCNN(num_classes=2).to(device)
-# model = SimplifiedDGCNN(num_classes=2).to(device)
+# model = DGCNN(num_classes=2).to(device)
+model = SimplifiedDGCNN(num_classes=2).to(device)
 
 
 model_name = type(model).__name__
